@@ -2,8 +2,8 @@ import React from 'react';
 
 const LoadingSpinner: React.FC = () => {
   return (
-    <div className="flex justify-center items-center py-20">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+    <div className="flex justify-center py-16">
+      <div className="w-6 h-6 border-2 border-neutral-200 border-t-neutral-600 rounded-full animate-spin"></div>
     </div>
   );
 };

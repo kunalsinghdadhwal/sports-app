@@ -1,87 +1,65 @@
 import React from 'react';
 import { Game } from '../types';
-import { Calendar, Clock } from 'lucide-react';
 
 interface MatchCardProps {
   game: Game;
 }
 
 const MatchCard: React.FC<MatchCardProps> = ({ game }) => {
-  // Format date to a readable format
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      weekday: 'short', 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
-  // Format time from ISO datetime string
-  const formatTimeFromISO = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
-  // Get team abbreviation and full name
-  const getTeamDisplay = (team: Game['home_team']) => {
-    return {
-      abbr: team.abbreviation,
-      name: team.full_name
-    };
-  };
-
-  const homeTeam = getTeamDisplay(game.home_team);
-  const visitorTeam = getTeamDisplay(game.visitor_team);
+  const homeTeam = game.home_team;
+  const visitorTeam = game.visitor_team;
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:shadow-lg hover:translate-y-[-2px]">
-      <div className="px-6 py-4">
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center text-gray-600">
-            <Calendar size={16} className="mr-1" />
-            <span className="text-sm">{formatDate(game.date)}</span>
+    <div className="bg-white border border-neutral-200 rounded-xl p-5">
+      <div className="flex items-center justify-between text-xs text-neutral-400 mb-5">
+        <span>{formatDate(game.date)}</span>
+        <span>{formatTime(game.date)}</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex-1 text-center">
+          <div className="w-14 h-14 mx-auto rounded-full bg-neutral-100 flex items-center justify-center mb-3">
+            <span className="text-sm font-bold text-neutral-700">{visitorTeam.abbreviation}</span>
           </div>
-          <div className="flex items-center text-gray-600">
-            <Clock size={16} className="mr-1" />
-            <span className="text-sm">{formatTimeFromISO(game.date)}</span>
-          </div>
+          <p className="text-sm font-medium text-neutral-800 mb-0.5">{visitorTeam.name}</p>
+          <p className="text-xs text-neutral-400">{visitorTeam.city}</p>
         </div>
-        
-        <div className="flex justify-between items-center">
-          {/* Away Team */}
-          <div className="flex flex-col items-center text-center w-2/5">
-            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-lg font-bold text-gray-700">
-              {visitorTeam.abbr}
-            </div>
-            <h3 className="mt-2 text-sm font-medium text-gray-800">{visitorTeam.name}</h3>
-            <p className="text-xs text-gray-600">Away</p>
-          </div>
-          
-          {/* VS */}
-          <div className="flex flex-col items-center">
-            <span className="text-lg font-bold text-orange-500">VS</span>
-            <span className="mt-1 text-xs text-gray-500">
-              {game.status === 'scheduled' ? 'Upcoming' : game.status}
-            </span>
-          </div>
-          
-          {/* Home Team */}
-          <div className="flex flex-col items-center text-center w-2/5">
-            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-blue-800">
-              {homeTeam.abbr}
-            </div>
-            <h3 className="mt-2 text-sm font-medium text-gray-800">{homeTeam.name}</h3>
-            <p className="text-xs text-gray-600">Home</p>
-          </div>
+
+        <div className="px-4">
+          <span className="text-xs font-medium text-neutral-300">VS</span>
         </div>
-        
-        <div className="mt-4 pt-3 border-t border-gray-100">
-          <p className="text-xs text-gray-500 text-center">
-            {homeTeam.name} Arena • {game.home_team.city}
-          </p>
+
+        <div className="flex-1 text-center">
+          <div className="w-14 h-14 mx-auto rounded-full bg-neutral-900 flex items-center justify-center mb-3">
+            <span className="text-sm font-bold text-white">{homeTeam.abbreviation}</span>
+          </div>
+          <p className="text-sm font-medium text-neutral-800 mb-0.5">{homeTeam.name}</p>
+          <p className="text-xs text-neutral-400">{homeTeam.city}</p>
         </div>
+      </div>
+
+      <div className="mt-5 pt-4 border-t border-neutral-100 text-center">
+        <span className="text-xs text-neutral-400">
+          {game.status === 'scheduled' ? 'Scheduled' : game.status}
+        </span>
       </div>
     </div>
   );
